@@ -1,0 +1,37 @@
+name: Bug report
+description: The meter renders wrong, stops updating, or misbehaves in your harness
+labels: [bug]
+body:
+  - type: dropdown
+    id: harness
+    attributes:
+      label: Harness
+      options:
+        - Claude Code
+        - OpenCode
+        - Pi
+        - Oh My Pi (OMP)
+        - other
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: Expected vs actual. Paste the segment output or state-file contents verbatim.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction
+      description: Steps or a sample stdin/event payload that triggers it
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: Harness version, toksec commit, OS
+    validations:
+      required: true

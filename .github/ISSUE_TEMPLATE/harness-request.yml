@@ -1,0 +1,25 @@
+name: Harness support request
+description: Request toksec for a coding-agent harness not yet covered
+labels: [enhancement]
+body:
+  - type: input
+    id: harness
+    attributes:
+      label: Harness
+      description: Name and repo/URL of the harness
+    validations:
+      required: true
+  - type: textarea
+    id: surface
+    attributes:
+      label: Extension surface
+      description: What the harness offers — status line, plugin events, hooks, streaming JSON output. Link its docs if possible.
+    validations:
+      required: true
+  - type: textarea
+    id: token-data
+    attributes:
+      label: Token data
+      description: How the harness exposes token counts (usage events, statusline payload, JSONL stream)
+    validations:
+      required: true

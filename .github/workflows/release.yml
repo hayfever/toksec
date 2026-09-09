@@ -1,0 +1,29 @@
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Run test suite
+        run: bun test
+
+      - name: Package modules
+        run: zip -r "toksec-${{ github.ref_name }}.zip" claude opencode pi omp
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: toksec-*.zip
+          generate_release_notes: true

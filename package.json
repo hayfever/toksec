@@ -1,8 +1,22 @@
 {
   "name": "toksec",
   "version": "0.1.0",
-  "private": true,
   "description": "Live tokens/sec meters for Claude Code, OpenCode, pi, and Oh My Pi",
+  "license": "MIT",
+  "author": "Hayden Luckenbach <hluckenb@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hayfever/toksec.git"
+  },
+  "keywords": [
+    "claude-code",
+    "opencode",
+    "pi-coding-agent",
+    "oh-my-pi",
+    "tokens-per-second",
+    "statusline",
+    "developer-tools"
+  ],
   "scripts": {
     "test": "bun test"
   }
