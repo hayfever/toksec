@@ -1,0 +1,42 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Run test suite
+        run: bun test
+      - name: Claude statusline under Node too
+        # The statusline script runs under Node in Claude Code; prove the
+        # stdin/stdout contract there as well, not only under Bun.
+        run: |
+          node -e '
+          const { spawn } = require("node:child_process");
+          const fs = require("node:fs"), os = require("node:os"), path = require("node:path");
+          const dir = fs.mkdtempSync(path.join(os.tmpdir(), "toksec-node-"));
+          const payload = JSON.stringify({ session_id: "n1", context_window: { total_output_tokens: 900 }, cost: { total_api_duration_ms: 16250 } });
+          const p = spawn(process.execPath, ["./claude/statusline.mjs"], { env: { ...process.env, TOKSEC_STATE_DIR: dir } });
+          p.stdin.end(payload);
+          let out = "";
+          p.stdout.on("data", (d) => (out += d));
+          p.on("close", (code) => {
+            const line = out.trim();
+            if (code !== 0 || line !== "⚡ 212 tok/s · 900 out") {
+              console.error("node mismatch:", code, line);
+              process.exit(1);
+            }
+            console.log("PASS node:", line);
+          });
+          '
