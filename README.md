@@ -36,6 +36,18 @@ git clone https://github.com/hayfever/toksec && cd toksec
 
 </details>
 
+## Updating
+
+
+| Install route | Update |
+| --- | --- |
+| curl installer (Claude Code / OpenCode / fallback) | rerun the same one-liner — it re-downloads the current files and is idempotent |
+| Pi | `pi update https://github.com/hayfever/toksec` (or `pi update --extensions` for every package) |
+| OMP | `omp plugin marketplace update toksec && omp plugin upgrade toksec@toksec` |
+
+Neither pi nor OMP shows a user-facing update prompt at startup today: pi only installs missing packages at startup, and OMP's `marketplace.autoUpdate` (default `notify`) currently writes update availability to the debug log. Updates run on your cadence; releases cut here bump the version in both `package.json` and the marketplace catalog so upgrades are detected.
+
+
 ## Supported harnesses
 
 | Harness | Module | Display surface | Granularity |
