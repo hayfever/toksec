@@ -18,25 +18,38 @@ jobs:
 
       - name: Run test suite
         run: bun test
+
       - name: Claude statusline under Node too
         # The statusline script runs under Node in Claude Code; prove the
-        # stdin/stdout contract there as well, not only under Bun.
+        # stdin/stdout contract there as well, not only under Bun. Two
+        # invocations build the state the rate math needs.
         run: |
           node -e '
           const { spawn } = require("node:child_process");
           const fs = require("node:fs"), os = require("node:os"), path = require("node:path");
           const dir = fs.mkdtempSync(path.join(os.tmpdir(), "toksec-node-"));
-          const payload = JSON.stringify({ session_id: "n1", context_window: { total_output_tokens: 900 }, cost: { total_api_duration_ms: 16250 } });
-          const p = spawn(process.execPath, ["./claude/statusline.mjs"], { env: { ...process.env, TOKSEC_STATE_DIR: dir } });
-          p.stdin.end(payload);
-          let out = "";
-          p.stdout.on("data", (d) => (out += d));
-          p.on("close", (code) => {
-            const line = out.trim();
-            if (code !== 0 || line !== "⚡ 212 tok/s · 900 out") {
-              console.error("node mismatch:", code, line);
+          const run = (payload) =>
+            new Promise((resolve, reject) => {
+              const p = spawn(process.execPath, ["./claude/statusline.mjs"], {
+                env: { ...process.env, TOKSEC_STATE_DIR: dir },
+              });
+              p.stdin.end(payload);
+              let out = "";
+              p.stdout.on("data", (d) => (out += d));
+              p.on("error", reject);
+              p.on("close", (code) => resolve({ code, line: out.trim() }));
+            });
+          (async () => {
+            const first = await run(JSON.stringify({ session_id: "n1", context_window: { total_output_tokens: 1200 }, cost: { total_api_duration_ms: 12000 } }));
+            if (first.code !== 0 || first.line !== "⚡ — tok/s · 1.2k out") {
+              console.error("node baseline mismatch:", first.code, first.line);
               process.exit(1);
             }
-            console.log("PASS node:", line);
-          });
+            const second = await run(JSON.stringify({ session_id: "n1", context_window: { total_output_tokens: 900 }, cost: { total_api_duration_ms: 16250 } }));
+            if (second.code !== 0 || second.line !== "⚡ 212 tok/s · 900 out") {
+              console.error("node rate mismatch:", second.code, second.line);
+              process.exit(1);
+            }
+            console.log("PASS node:", second.line);
+          })();
           '
