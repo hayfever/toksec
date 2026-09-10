@@ -1,7 +1,16 @@
 # Changelog
 
+## [0.2.0] - 2026-09-10
+
+### Added
+- `install.sh` — one-line curl-pipe installer for Claude Code, OpenCode, pi, and OMP (no clone). Preserves existing status lines and plugin entries; backs up configs before merging.
+- Native package installs: repo ships `pi.extensions` and `omp.extensions` manifests plus an OMP marketplace catalog (`omp plugin marketplace add hayfever/toksec`).
+- Installer test suite (sandboxed `$HOME`, offline via `TOKSEC_LOCAL_DIR`).
+
+### Changed
+- README install section now leads with one-liners.
+
 All notable changes to this project are documented in this file.
-Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow [SemVer](https://semver.org/).
 
 ## [0.1.0] - 2026-09-09
 

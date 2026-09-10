@@ -1,6 +1,6 @@
 {
   "name": "toksec",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Live tokens/sec meters for Claude Code, OpenCode, pi, and Oh My Pi",
   "license": "MIT",
   "author": "Hayden Luckenbach <hluckenb@gmail.com>",
@@ -17,6 +17,12 @@
     "statusline",
     "developer-tools"
   ],
+  "pi": {
+    "extensions": ["./pi/toksec.ts"]
+  },
+  "omp": {
+    "extensions": ["./omp/toksec.ts"]
+  },
   "scripts": {
     "test": "bun test"
   }
